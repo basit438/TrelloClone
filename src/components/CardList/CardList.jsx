@@ -45,8 +45,8 @@ function CardList(props) {
   return (
     <div ref={dropRef} className={`bg-white rounded-lg shadow-md p-4 w-72 ${isOver ? 'bg-gray-200' : 'bg-white'}`}>
       <h3 className="text-lg font-bold mb-2">{props.title}</h3>
-      {ctx.state[props.id].map((data) => (
-        <Card id={props.id} title={data} key={data} />
+      {ctx.state[props.id].map((data, index) => (
+        <Card id={props.id} title={data} key={data} index={index} />
       ))}
       {showAddCard ? (
         <div className="mt-4">

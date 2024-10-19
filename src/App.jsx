@@ -24,7 +24,6 @@ function App() {
             action.payload.data,
           ],
         };
-  
       case 'move-item': {
         const fromList = state[action.payload.fromList].filter(item => item !== action.payload.data);
         const toList = [...state[action.payload.toList], action.payload.data];
@@ -34,10 +33,26 @@ function App() {
           [action.payload.toList]: toList,
         };
       }
+      case 'edit-item': {
+        const list = [...state[action.payload.listName]];
+        list[action.payload.index] = action.payload.newData;
+        return {
+          ...state,
+          [action.payload.listName]: list,
+        };
+      }
+      case 'delete-item': {
+        const newList = state[action.payload.listName].filter((_, idx) => idx !== action.payload.index);
+        return {
+          ...state,
+          [action.payload.listName]: newList,
+        };
+      }
       default:
         return state;
     }
   };
+  
 
   const [state, dispatch] = useReducer(reducerfn, initState);
 
