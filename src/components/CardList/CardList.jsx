@@ -4,6 +4,7 @@ import { TrelloContext } from '../../App';
 import { useDrop } from 'react-dnd';
 
 function CardList(props) {
+  const ctx = useContext(TrelloContext);
   const [{ isOver }, dropRef] = useDrop({
     accept: 'CARD',
     drop: (item) => {
@@ -21,7 +22,6 @@ function CardList(props) {
     }),
   });
 
-  const ctx = useContext(TrelloContext);
   const [showAddCard, setShowAddCard] = useState(false);
   const textBoxRef = useRef(null);
 
@@ -43,7 +43,7 @@ function CardList(props) {
   };
 
   return (
-    <div ref={dropRef} className={`bg-white rounded-lg shadow-md p-4 w-72 ${isOver ? 'bg-gray-200' : 'bg-white'}`}>
+    <div ref={dropRef} className={`bg-white rounded-lg shadow-md p-4 w-full max-w-xs ${isOver ? 'bg-gray-200' : 'bg-white'} sm:w-72`}>
       <h3 className="text-lg font-bold mb-2">{props.title}</h3>
       {ctx.state[props.id].map((data, index) => (
         <Card id={props.id} title={data} key={data} index={index} />
