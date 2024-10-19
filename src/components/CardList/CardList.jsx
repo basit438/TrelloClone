@@ -1,72 +1,67 @@
 import React, { useRef, useState, useContext } from 'react';
 import Card from '../Card/Card';
-import './CardList.css';
 import { TrelloContext } from '../../App';
 import { useDrop } from 'react-dnd';
 
 function CardList(props) {
-  // Using drop from react-dnd to handle dropping of items
   const [{ isOver }, dropRef] = useDrop({
-    accept: 'CARD', // Accepting only 'CARD' items
+    accept: 'CARD',
     drop: (item) => {
-      // When a card is dropped, dispatch an action to move the item to the target list
       ctx.dispatch({
         type: 'move-item',
         payload: {
-          fromList: item.id, // The list where the card is coming from
-          toList: props.id,  // The list where the card is being dropped
-          data: item.title,  // The data being transferred
+          fromList: item.id,
+          toList: props.id,
+          data: item.title,
         },
       });
     },
     collect: (monitor) => ({
-      isOver: monitor.isOver(), // Boolean to indicate if the item is over the list
+      isOver: monitor.isOver(),
     }),
   });
 
-  const ctx = useContext(TrelloContext); // Accessing global state and dispatch from context
-
-  const [showAddCard, setShowAddCard] = useState(false); // State for toggling the add card form
+  const ctx = useContext(TrelloContext);
+  const [showAddCard, setShowAddCard] = useState(false);
+  const textBoxRef = useRef(null);
 
   const onAddCardClick = () => {
     setShowAddCard(true);
   };
 
   const onAddClick = () => {
-    const task = textBoxRef.current.value; // Get the task from the input
+    const task = textBoxRef.current.value;
     ctx.dispatch({
       type: 'add-item',
       payload: {
-        data: task,        // Data to be added (task)
-        listName: props.id // To which list it should be added (todo, inProgress, done)
+        data: task,
+        listName: props.id,
       },
     });
-    textBoxRef.current.value = ''; // Clear the input after adding the card
-    setShowAddCard(false); // Hide the add card form
+    textBoxRef.current.value = '';
+    setShowAddCard(false);
   };
 
-  const textBoxRef = useRef(null); // Reference for the input textarea
-
   return (
-    <div ref={dropRef} className="CardList" style={{ backgroundColor: isOver ? '#f0f0f0' : 'white' }}>
-      <h3>{props.title}</h3>
-      
-      {/* Render the cards in this list */}
+    <div ref={dropRef} className={`bg-white rounded-lg shadow-md p-4 w-72 ${isOver ? 'bg-gray-200' : 'bg-white'}`}>
+      <h3 className="text-lg font-bold mb-2">{props.title}</h3>
       {ctx.state[props.id].map((data) => (
         <Card id={props.id} title={data} key={data} />
       ))}
-
-      {/* Add card form toggle */}
       {showAddCard ? (
-        <div className="add-card-toggle-container">
-          <textarea ref={textBoxRef} className="add-card-toggle-input-textarea"></textarea>
-          <button onClick={onAddClick}>Add</button>
-          <button onClick={() => setShowAddCard(false)}>Cancel</button>
+        <div className="mt-4">
+          <textarea
+            ref={textBoxRef}
+            className="w-full p-2 border rounded focus:outline-none focus:ring"
+            placeholder="Enter a title for this card..."
+          />
+          <div className="mt-2">
+            <button onClick={onAddClick} className="bg-blue-500 text-white px-4 py-2 rounded">Add</button>
+            <button onClick={() => setShowAddCard(false)} className="ml-2 text-gray-500">Cancel</button>
+          </div>
         </div>
       ) : (
-        <span className="add-another-card-btn" onClick={onAddCardClick}>
-          + Add another card
-        </span>
+        <span onClick={onAddCardClick} className="text-blue-500 cursor-pointer">+ Add another card</span>
       )}
     </div>
   );
