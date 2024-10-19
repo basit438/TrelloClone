@@ -29,7 +29,7 @@ const reducerfn =(state , action)=>{
       console.log(action.payload);
       return {
         ...state,
-        [action.payload.listName] : [...[action.payload.listName] , action.payload.data] // made a copy of the array and pushed the data to it 
+        [action.payload.listName] : [...state[action.payload.listName] , action.payload.data] // made a copy of the array and pushed the data to it 
       }
 
     case "edit-item":

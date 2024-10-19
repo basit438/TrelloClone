@@ -22,7 +22,7 @@ function CardList(props) {
       {type: "add-item",
       payload: {
         data : task,
-        listName : "todo"
+        listName : props.id
       }
     })
   }
@@ -32,7 +32,7 @@ function CardList(props) {
     <div className="CardList">
       <h3>{props.title}</h3>
       {
-        ctx.state.todo.map(data => <Card title={data} key={data}/>)
+        ctx.state[props.id].map(data => <Card title={data} key={data}/>)
       }
       
       {
